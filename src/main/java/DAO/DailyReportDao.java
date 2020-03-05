@@ -26,14 +26,13 @@ public class DailyReportDao {
 
     public DailyReport getLastDailyReport() {
         Transaction transaction = session.beginTransaction();
-        Long id = (Long) session
-                .createCriteria(DailyReport.class)
-                .setProjection(Projections.max("id"))
-                .uniqueResult();
-        DailyReport dailyReports = (DailyReport) session.get(DailyReport.class, id);
+        List<DailyReport> list = session.createQuery("FROM DailyReport ORDER BY id DESC")
+                                        .setMaxResults(2)
+                                        .list();
+        DailyReport lastReport = list.get(0);
         transaction.commit();
         session.close();
-        return dailyReports;
+        return lastReport;
     }
 
 
